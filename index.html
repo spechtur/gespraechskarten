@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#c7d200">
+<title>Gesprächskarten</title>
+<style>
+:root{
+  --bg:#c7d200;--fg:#2b2b2b;
+  --sans:'DejaVu Sans','Verdana','Tahoma',sans-serif;
+  --serif:'DejaVu Serif',Georgia,'Times New Roman',serif;
+  --line:color-mix(in srgb,var(--fg) 28%,transparent);
+  --pad-t:max(1.1rem,env(safe-area-inset-top));
+  --pad-r:max(1.1rem,env(safe-area-inset-right));
+  --pad-b:max(1.1rem,env(safe-area-inset-bottom));
+  --pad-l:max(1.1rem,env(safe-area-inset-left));
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--sans);
+  transition:background .55s ease,color .55s ease;
+  -webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;
+  overflow:hidden;
+}
+button{font-family:inherit;color:inherit}
+button:focus-visible{outline:.2em solid var(--fg);outline-offset:.15em}
+
+.screen{
+  position:fixed;inset:0;display:flex;flex-direction:column;overflow-y:auto;
+  padding:var(--pad-t) var(--pad-r) var(--pad-b) var(--pad-l);
+}
+
+/* Bausteine */
+.kicker{font-weight:800;text-transform:uppercase;letter-spacing:.16em;font-size:clamp(.78rem,2.6vw,1rem);opacity:.85}
+.num{display:inline-block;border:.14em solid var(--fg);border-radius:.4em;padding:.12em .5em;letter-spacing:.06em;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}
+.serif{font-family:var(--serif);font-style:italic;line-height:1.28;text-wrap:balance}
+.btn{
+  font:800 clamp(1rem,4.2vw,1.35rem) var(--sans);text-transform:uppercase;letter-spacing:.08em;
+  min-height:3.4rem;padding:.75em 1.3em;border:.14em solid var(--fg);border-radius:.45em;
+  background:var(--fg);color:var(--bg);cursor:pointer;
+  transition:transform .12s ease,background .55s ease,color .55s ease,border-color .55s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(1px)}
+.btn.alt{background:transparent;color:var(--fg)}
+.btn.ghost{background:transparent;color:var(--fg);opacity:.75}
+.linkbtn{
+  background:none;border:0;padding:.7em 1em;min-height:48px;cursor:pointer;
+  font:700 .9rem var(--sans);text-transform:uppercase;letter-spacing:.14em;opacity:.7;
+  text-decoration:underline;text-underline-offset:.3em;text-decoration-thickness:.12em;
+}
+.linkbtn:hover{opacity:1}
+
+.chip{
+  display:inline-flex;align-items:center;gap:.55em;min-height:48px;padding:.55em 1.1em;
+  border:.14em solid var(--fg);border-radius:99px;background:transparent;cursor:pointer;
+  font:800 clamp(.9rem,3.6vw,1.05rem) var(--sans);text-transform:uppercase;letter-spacing:.08em;
+  transition:background .2s ease,color .2s ease;
+}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.chip{max-width:100%;text-align:left}
+.chip.set{text-transform:none;letter-spacing:.01em}
+.dot{width:1em;height:1em;border-radius:50%;border:.14em solid currentColor;flex:none}
+
+.band{position:fixed;left:0;right:0;bottom:0;height:max(8px,1.4vh);display:flex;z-index:5}
+.band i{flex:1}
+
+@keyframes rise{from{opacity:0;transform:translateY(2vh)}to{opacity:1;transform:none}}
+.rise{animation:rise .45s ease both}
+@media (prefers-reduced-motion:reduce){
+  .rise{animation:none}
+  body{transition:none}
+}
+
+/* ---------- Moderationsansicht ---------- */
+#mod{padding-bottom:calc(var(--pad-b) + 2.2rem)}
+#mod .wrap{width:100%;max-width:56rem;margin:0 auto;display:flex;flex-direction:column;gap:1.6rem;flex:1 0 auto}
+.title{
+  margin:.4rem 0 0;font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1.05;
+  font-size:clamp(1.5rem,7.2vw,4.4rem);border-bottom:.07em solid var(--fg);padding-bottom:.12em;align-self:flex-start;
+  overflow-wrap:anywhere;
+}
+.lead{font-size:clamp(1.05rem,4.2vw,1.45rem);margin:0;max-width:44rem}
+.field{display:flex;flex-direction:column;gap:.7rem;padding-top:1.2rem;border-top:2px solid var(--line)}
+.field .head{display:flex;align-items:center;gap:.8rem}
+.field .head .num{font-size:.9rem}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem}
+.note{font-size:clamp(.95rem,3.6vw,1.1rem);margin:0;opacity:.85}
+.linkbox{font-weight:700;font-size:clamp(.85rem,3.4vw,1rem);overflow-wrap:anywhere;opacity:.85;margin:0}
+.actions{display:flex;flex-wrap:wrap;gap:.8rem;padding-top:.4rem}
+.actions .btn{flex:1 1 14rem}
+
+/* QR-Overlay */
+#qr{z-index:20;background:var(--bg);align-items:center;justify-content:center;gap:1.4rem;text-align:center}
+#qr .qrbox{background:#fff;padding:clamp(.8rem,3vmin,2rem);border-radius:1.2rem;border:.3rem solid var(--fg);line-height:0}
+#qr img{width:min(78vw,58vh);height:min(78vw,58vh);image-rendering:pixelated;display:block}
+#qr .qrtext{display:flex;flex-direction:column;gap:.9rem;align-items:center;max-width:40rem}
+#qr .scan{font-weight:800;font-size:clamp(1.6rem,6vw,3rem);line-height:1.05;margin:0;text-wrap:balance}
+#qr .url{font-weight:800;font-size:clamp(1rem,3.8vw,1.6rem);overflow-wrap:anywhere;margin:0}
+#qr .qrfail{font-family:var(--serif);font-style:italic;color:#1c1c1c;width:min(78vw,58vh);line-height:1.3;padding:1rem}
+
+/* ---------- Karte (Handy und Plenum) ---------- */
+#card{padding-top:var(--pad-t);gap:.6rem;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.filterbar{display:flex;flex-wrap:wrap;gap:.4rem;opacity:.9}
+.filterbar .chip{min-height:40px;padding:.35em .8em;font-size:.72rem;letter-spacing:.1em;gap:.45em;border-width:.12em}
+.filterbar .chip[aria-pressed="false"]{opacity:.55}
+.filterbar .chip .dot{width:.95em;height:.95em}
+.cardhead{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.cardhead .num{font-size:clamp(.85rem,3vw,1.1rem)}
+.mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:1.1rem;padding:.6rem 0;overflow:hidden}
+.accent{width:clamp(3.5rem,14vw,9rem);height:max(7px,1.1vh);border-radius:99px;background:var(--fg);transition:background .55s ease;flex:none}
+.ctext{margin:0;font-weight:800;line-height:1.1;letter-spacing:-.012em;text-wrap:balance;hyphens:manual;overflow-wrap:break-word}
+.ctext[data-len="s"]{font-size:clamp(1.9rem,min(10vw,7.4vh),5rem)}
+.ctext[data-len="m"]{font-size:clamp(1.7rem,min(8.6vw,6.2vh),4.3rem)}
+.ctext[data-len="l"]{font-size:clamp(1.5rem,min(7.2vw,5.2vh),3.7rem)}
+.zusatz{margin:0;font-size:clamp(1rem,4vw,1.5rem);opacity:.9}
+.cardfoot{display:flex;flex-direction:column;align-items:stretch;gap:.1rem}
+#next{min-height:64px;width:100%;font-size:clamp(1.05rem,4.6vw,1.4rem)}
+#reshuffle{align-self:center}
+
+/* Plenum */
+body.plenum #card{cursor:pointer;padding:max(2rem,4vh) max(2rem,5vw) max(2rem,5vh)}
+body.plenum .cardhead .kicker{font-size:clamp(.9rem,1.6vw,1.5rem)}
+body.plenum .cardhead .num{font-size:clamp(.8rem,1.2vw,1.2rem);opacity:.75}
+body.plenum .ctext{max-width:min(92vw,80rem)}
+body.plenum .ctext[data-len="s"]{font-size:clamp(2rem,min(6.4vw,11.5vh),9rem)}
+body.plenum .ctext[data-len="m"]{font-size:clamp(1.8rem,min(5.4vw,9.6vh),7.6rem)}
+body.plenum .ctext[data-len="l"]{font-size:clamp(1.6rem,min(4.6vw,8.2vh),6.4rem)}
+body.plenum .zusatz{font-size:clamp(1.1rem,min(2.4vw,4.4vh),3rem)}
+.hint{font-size:clamp(.8rem,1.1vw,1.1rem);text-align:center;opacity:.6;transition:opacity .4s ease}
+
+/* Abschluss und Fehler */
+.endscreen{align-items:center;justify-content:center;text-align:center;gap:1.6rem;padding-bottom:calc(var(--pad-b) + 2rem)}
+.endscreen h1{margin:0;font-weight:800;font-size:clamp(2rem,min(9vw,9vh),5.5rem);line-height:1.05;letter-spacing:-.012em;text-wrap:balance}
+.endscreen .serif{margin:0;font-size:clamp(1.05rem,min(4.2vw,3.4vh),2rem);max-width:min(80vw,40rem)}
+.endscreen .btn{min-width:min(100%,20rem);min-height:64px}
+
+/* Vollbild-Schalter */
+#fs{
+  position:fixed;z-index:30;top:max(.9rem,env(safe-area-inset-top));right:max(.9rem,env(safe-area-inset-right));
+  width:3.2rem;height:3.2rem;border:.14em solid var(--fg);border-radius:.45em;background:transparent;
+  font:800 1.4rem/1 var(--sans);cursor:pointer;transition:opacity .4s ease,color .55s ease,border-color .55s ease;
+}
+body.idle #fs,body.idle .hint{opacity:0;pointer-events:none}
+body.idle{cursor:none}
+body.plenum .cardhead{padding-right:4rem}
+
+/* Breite, flache Bildschirme */
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+  .btn{font-size:clamp(.95rem,1.2vw,1.4rem);padding:.75em 1.3em}
+  .title{font-size:min(4.4rem,4.2vw,9vh)}
+  .lead{font-size:clamp(1.1rem,1.6vw,1.6rem)}
+  #mod .wrap{gap:1.3rem}
+  #qr{flex-direction:row;gap:5vw;padding:5vh 6vw}
+  #qr img,#qr .qrfail{width:min(76vh,48vw);height:min(76vh,48vw)}
+  #qr .qrtext{align-items:flex-start;text-align:left;max-width:34vw}
+  #qr .scan{font-size:min(4.4vw,8vh)}
+  #qr .url{font-size:min(2.2vw,4.2vh)}
+  #next{max-width:34rem;align-self:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Moderationsansicht -->
+<section id="mod" class="screen" hidden>
+  <div class="wrap">
+    <h1 class="title">Gesprächskarten</h1>
+    <p class="lead serif">Alle ziehen auf dem eigenen Handy eine Karte, suchen sich ein Gegenüber und sprechen zwei, drei Minuten. Dann nächste Karte, neues Gegenüber.</p>
+
+    <div class="field">
+      <div class="head"><span class="num">01</span><span class="kicker">Kartensatz</span></div>
+      <div class="chips" id="setChips"></div>
+      <p class="note serif" id="setInfo"></p>
+    </div>
+
+    <div class="field">
+      <div class="head"><span class="num">02</span><span class="kicker">Modus</span></div>
+      <div class="chips" id="modeChips">
+        <button type="button" class="chip" data-mode="handy">Handy</button>
+        <button type="button" class="chip" data-mode="plenum">Plenum</button>
+      </div>
+      <p class="note serif" id="modeInfo"></p>
+    </div>
+
+    <div class="field">
+      <div class="head"><span class="num">03</span><span class="kicker">Kartentypen</span></div>
+      <div class="chips" id="typChips"></div>
+      <p class="note serif">Mindestens ein Typ bleibt aktiv.</p>
+    </div>
+
+    <div class="field" id="fieldFilter">
+      <div class="head"><span class="num">04</span><span class="kicker">Teilnehmende dürfen selbst filtern</span></div>
+      <div class="chips" id="filterChips">
+        <button type="button" class="chip" data-filter="0">Nein</button>
+        <button type="button" class="chip" data-filter="1">Ja</button>
+      </div>
+    </div>
+
+    <div class="field" id="fieldOrder" hidden>
+      <div class="head"><span class="num">04</span><span class="kicker">Reihenfolge</span></div>
+      <div class="chips" id="orderChips">
+        <button type="button" class="chip" data-order="gemischt">Gemischt</button>
+        <button type="button" class="chip" data-order="satz">Wie im Satz</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="head"><span class="num">05</span><span class="kicker">Link</span></div>
+      <p class="linkbox" id="linkText"></p>
+      <div class="actions">
+        <button type="button" class="btn" id="showQr">QR-Code einblenden</button>
+        <button type="button" class="btn alt" id="copyLink">Link kopieren</button>
+        <button type="button" class="btn alt" id="startPlenum" hidden>Plenum hier starten</button>
+      </div>
+    </div>
+  </div>
+  <div class="band" aria-hidden="true"><i style="background:#23b2c6"></i><i style="background:#ed6a69"></i><i style="background:#fbb900"></i><i style="background:#6169af"></i></div>
+</section>
+
+<!-- QR-Code im Vollbild -->
+<section id="qr" class="screen" hidden aria-label="QR-Code">
+  <div class="qrbox">
+    <img id="qrImg" alt="QR-Code mit dem Link zu den Gesprächskarten">
+    <div class="qrfail" id="qrFail" hidden>Der QR-Code konnte nicht geladen werden. Nutze den Link daneben.</div>
+  </div>
+  <div class="qrtext">
+    <span class="kicker" id="qrKicker"></span>
+    <p class="scan" id="qrScan"></p>
+    <p class="url" id="qrUrl"></p>
+    <button type="button" class="btn alt" id="closeQr">Schliessen</button>
+  </div>
+</section>
+
+<!-- Karte -->
+<section id="card" class="screen" hidden>
+  <div class="filterbar" id="filterbar" hidden></div>
+  <div class="cardhead">
+    <span class="kicker" id="cKicker"></span>
+    <span class="num" id="cNum"></span>
+  </div>
+  <div class="mid" id="cMid">
+    <div class="accent" aria-hidden="true"></div>
+    <p class="ctext" id="cText" aria-live="polite"></p>
+    <p class="zusatz serif" id="cZusatz" hidden></p>
+  </div>
+  <div class="cardfoot" id="handyFoot">
+    <button type="button" class="btn" id="next">Nächste Karte →</button>
+    <button type="button" class="linkbtn" id="reshuffle">Neu mischen</button>
+  </div>
+  <p class="hint" id="plenumHint" hidden>Klick, Leertaste oder → für die nächste Karte · ← zurück · F Vollbild</p>
+</section>
+
+<!-- Abschluss -->
+<section id="done" class="screen endscreen" hidden>
+  <h1 id="doneText">Das waren alle Karten.</h1>
+  <button type="button" class="btn" id="again">Nochmals mischen</button>
+</section>
+
+<!-- Fehler -->
+<section id="err" class="screen endscreen" hidden>
+  <span class="kicker">Hinweis</span>
+  <h1 id="errTitle">Kartensatz nicht gefunden.</h1>
+  <p class="serif" id="errText">Prüf den Link oder frag nach einem neuen QR-Code.</p>
+</section>
+
+<button type="button" id="fs" title="Vollbild (F)" aria-label="Vollbild umschalten" hidden>⛶</button>
+
+<script>
+(function () {
+  'use strict';
+
+  var TYPEN = {
+    frage:     { label: 'Frage',      bg: '#23b2c6', fg: '#1c1c1c' },
+    these:     { label: 'These',      bg: '#ed6a69', fg: '#1c1c1c' },
+    satz:      { label: 'Satzanfang', bg: '#fbb900', fg: '#1c1c1c' },
+    erfahrung: { label: 'Erfahrung',  bg: '#6169af', fg: '#ffffff' }
+  };
+  var TYP_KEYS = Object.keys(TYPEN);
+  var FARBEN = {
+    start: { bg: '#c7d200', fg: '#2b2b2b' },
+    grau:  { bg: '#c6c6c6', fg: '#1c1c1c' }
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var screens = ['mod', 'qr', 'card', 'done', 'err'];
+
+  function show(id) {
+    screens.forEach(function (s) { $(s).hidden = s !== id; });
+  }
+
+  function setColors(c) {
+    var root = document.documentElement.style;
+    root.setProperty('--bg', c.bg);
+    root.setProperty('--fg', c.fg);
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', c.bg);
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  function validSlug(s) { return typeof s === 'string' && /^[a-z0-9][a-z0-9-]{0,80}$/.test(s); }
+
+  function loadJSON(path) {
+    return fetch(path, { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    });
+  }
+
+  function loadSet(slug) {
+    return loadJSON('sets/' + slug + '.json').then(function (data) {
+      var karten = (data && Array.isArray(data.karten) ? data.karten : []).filter(function (k) {
+        return k && TYPEN[k.typ] && typeof k.text === 'string' && k.text.trim() !== '';
+      });
+      if (!karten.length) throw new Error('leer');
+      return { slug: slug, titel: data.titel || slug, beschreibung: data.beschreibung || '', karten: karten };
+    });
+  }
+
+  function parseTypen(raw) {
+    if (!raw) return TYP_KEYS.slice();
+    var list = raw.split(',').map(function (s) { return s.trim().toLowerCase(); })
+      .filter(function (s, i, a) { return TYPEN[s] && a.indexOf(s) === i; });
+    return list.length ? TYP_KEYS.filter(function (k) { return list.indexOf(k) !== -1; }) : TYP_KEYS.slice();
+  }
+
+  function showError(title, text) {
+    setColors(FARBEN.grau);
+    $('errTitle').textContent = title || 'Kartensatz nicht gefunden.';
+    $('errText').textContent = text || 'Prüf den Link oder frag nach einem neuen QR-Code.';
+    show('err');
+  }
+
+  // Langen Link nach ? und & umbrechbar machen
+  function setLinkText(el, link) {
+    el.textContent = '';
+    link.replace(/([?&])/g, '$1\n').split('\n').forEach(function (part, i) {
+      if (i) el.appendChild(document.createElement('wbr'));
+      el.appendChild(document.createTextNode(part));
+    });
+  }
+
+  // Basis-URL zur Laufzeit, damit der Link in jedem Ordner stimmt
+  function baseUrl() {
+    return location.origin + location.pathname;
+  }
+
+  /* ---------- Vollbild und Ruhezustand ---------- */
+  var idleTimer = null;
+  function fsElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
+  function toggleFullscreen() {
+    var d = document.documentElement;
+    if (fsElement()) {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    } else if (d.requestFullscreen) {
+      d.requestFullscreen().catch(function () {});
+    } else if (d.webkitRequestFullscreen) {
+      d.webkitRequestFullscreen();
+    }
+  }
+  function updateFsIcon() { $('fs').textContent = fsElement() ? '×' : '⛶'; }
+  function wake() {
+    document.body.classList.remove('idle');
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function () { document.body.classList.add('idle'); }, 3000);
+  }
+  function enableFsButton() {
+    if (!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen)) return;
+    $('fs').hidden = false;
+    $('fs').addEventListener('click', function (e) { e.stopPropagation(); toggleFullscreen(); this.blur(); });
+    document.addEventListener('fullscreenchange', updateFsIcon);
+    document.addEventListener('webkitfullscreenchange', updateFsIcon);
+    ['mousemove', 'mousedown', 'touchstart', 'keydown'].forEach(function (ev) {
+      document.addEventListener(ev, wake, { passive: true });
+    });
+    wake();
+  }
+
+  /* ---------- Bildschirm wach halten ---------- */
+  var wakeLock = null;
+  function requestWakeLock() {
+    if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
+    navigator.wakeLock.request('screen').then(function (l) { wakeLock = l; }).catch(function () {});
+  }
+  function keepAwake() {
+    requestWakeLock();
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') requestWakeLock();
+    });
+    // Manche Browser erlauben Wake Lock erst nach einer Geste
+    document.addEventListener('pointerdown', function once() {
+      if (!wakeLock || wakeLock.released) requestWakeLock();
+    }, { passive: true });
+  }
+
+  /* ---------- Karten-Ansicht (Handy und Plenum) ---------- */
+  function startCards(params) {
+    var slug = params.get('set');
+    var mode = params.get('mode') === 'plenum' ? 'plenum' : 'handy';
+    var plenum = mode === 'plenum';
+    var allowFilter = !plenum && params.get('filter') === '1';
+    var active = parseTypen(params.get('typen'));
+    var ordered = plenum && params.get('reihenfolge') === 'satz';
+
+    if (!validSlug(slug)) { showError(); return; }
+
+    var set = null, deck = [], pos = 0;
+
+    document.body.classList.add(plenum ? 'plenum' : 'handy');
+    $('handyFoot').hidden = plenum;
+    $('plenumHint').hidden = !plenum;
+
+    function buildDeck(avoidNr) {
+      var pool = set.karten.filter(function (k) { return active.indexOf(k.typ) !== -1; });
+      deck = ordered ? pool : shuffle(pool);
+      // Nach Neu mischen nicht dieselbe Karte nochmals zuoberst
+      if (!ordered && deck.length > 1 && avoidNr != null && deck[0].nr === avoidNr) {
+        var t = deck[0]; deck[0] = deck[1]; deck[1] = t;
+      }
+      pos = 0;
+    }
+
+    function fitText() {
+      var el = $('cText'), box = $('cMid');
+      el.style.fontSize = '';
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      var guard = 0;
+      while ((box.scrollHeight > box.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) && size > 14 && guard++ < 40) {
+        size *= 0.94;
+        el.style.fontSize = size + 'px';
+      }
+    }
+
+    function render() {
+      if (pos >= deck.length) {
+        setColors(FARBEN.grau);
+        $('doneText').textContent = deck.length ? 'Das waren alle Karten.' : 'Für diese Auswahl gibt es keine Karten.';
+        show('done');
+        return;
+      }
+      var k = deck[pos], t = TYPEN[k.typ];
+      setColors(t);
+      $('cKicker').textContent = t.label;
+      $('cNum').textContent = k.nr != null ? pad2(k.nr) : '';
+      $('cNum').hidden = k.nr == null;
+      var text = $('cText');
+      text.textContent = k.text;
+      text.dataset.len = k.text.length <= 60 ? 's' : k.text.length <= 100 ? 'm' : 'l';
+      var z = $('cZusatz');
+      z.hidden = !k.zusatz;
+      z.textContent = k.zusatz || '';
+      show('card');
+      fitText();
+      var mid = $('cMid');
+      mid.classList.remove('rise');
+      void mid.offsetWidth;
+      mid.classList.add('rise');
+    }
+
+    function next() { if (pos < deck.length) { pos++; render(); } }
+    function prev() { if (pos > 0) { pos--; render(); } }
+    function reshuffle() {
+      var cur = deck[pos] ? deck[pos].nr : null;
+      buildDeck(cur);
+      render();
+    }
+
+    function buildFilterbar() {
+      var bar = $('filterbar');
+      bar.hidden = false;
+      TYP_KEYS.forEach(function (key) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip';
+        b.dataset.typ = key;
+        b.innerHTML = '<span class="dot" style="background:' + TYPEN[key].bg + '"></span>';
+        b.appendChild(document.createTextNode(TYPEN[key].label));
+        b.setAttribute('aria-pressed', active.indexOf(key) !== -1 ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          var on = active.indexOf(key) !== -1;
+          if (on && active.length === 1) { this.blur(); return; }
+          active = on ? active.filter(function (x) { return x !== key; }) : active.concat(key);
+          active = TYP_KEYS.filter(function (x) { return active.indexOf(x) !== -1; });
+          this.setAttribute('aria-pressed', on ? 'false' : 'true');
+          this.blur();
+          buildDeck(null);
+          render();
+        });
+        bar.appendChild(b);
+      });
+    }
+
+    // Bedienung
+    $('next').addEventListener('click', function () { this.blur(); next(); });
+    $('reshuffle').addEventListener('click', function () { this.blur(); reshuffle(); });
+    $('again').addEventListener('click', function () { this.blur(); buildDeck(null); render(); });
+
+    var sx = null, sy = null, st = 0;
+    $('card').addEventListener('pointerdown', function (e) {
+      if (e.target.closest('button')) { sx = null; return; }
+      sx = e.clientX; sy = e.clientY; st = Date.now();
+    });
+    $('card').addEventListener('pointerup', function (e) {
+      if (sx == null) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+        if (dx < 0) next(); else if (plenum) prev();
+      } else if (plenum && Math.abs(dx) < 10 && Math.abs(dy) < 10 && Date.now() - st < 600) {
+        next();
+      }
+    });
+    $('card').addEventListener('pointercancel', function () { sx = null; });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      var k = e.key;
+      if (k === 'ArrowRight' || k === 'PageDown' || (plenum && (k === ' ' || k === 'Enter'))) {
+        e.preventDefault(); next();
+      } else if (plenum && (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace')) {
+        e.preventDefault(); prev();
+      } else if (plenum && (k === 'f' || k === 'F')) {
+        e.preventDefault(); toggleFullscreen();
+      }
+    });
+    window.addEventListener('resize', function () { if (!$('card').hidden) fitText(); });
+
+    loadSet(slug).then(function (s) {
+      set = s;
+      document.title = s.titel + ' · Gesprächskarten';
+      if (allowFilter) buildFilterbar();
+      if (plenum) enableFsButton();
+      keepAwake();
+      buildDeck(null);
+      render();
+    }).catch(function () { showError(); });
+  }
+
+  /* ---------- Moderationsansicht ---------- */
+  function startModeration() {
+    setColors(FARBEN.start);
+    show('mod');
+
+    var state = { set: null, mode: 'handy', typen: TYP_KEYS.slice(), filter: '0', order: 'gemischt' };
+    var sets = [];
+    var setCache = {};
+
+    function press(container, attr, value) {
+      container.querySelectorAll('.chip').forEach(function (c) {
+        c.setAttribute('aria-pressed', c.dataset[attr] === value ? 'true' : 'false');
+      });
+    }
+
+    function buildLink() {
+      var p = new URLSearchParams();
+      p.set('set', state.set);
+      p.set('mode', state.mode);
+      if (state.mode === 'handy' && state.filter === '1') p.set('filter', '1');
+      if (state.typen.length !== TYP_KEYS.length) p.set('typen', state.typen.join(','));
+      if (state.mode === 'plenum' && state.order === 'satz') p.set('reihenfolge', 'satz');
+      return baseUrl() + '?' + p.toString().replace(/%2C/g, ',');
+    }
+
+    function update() {
+      press($('modeChips'), 'mode', state.mode);
+      press($('filterChips'), 'filter', state.filter);
+      press($('orderChips'), 'order', state.order);
+      press($('setChips'), 'slug', state.set);
+      $('typChips').querySelectorAll('.chip').forEach(function (c) {
+        c.setAttribute('aria-pressed', state.typen.indexOf(c.dataset.typ) !== -1 ? 'true' : 'false');
+      });
+      var handy = state.mode === 'handy';
+      $('fieldFilter').hidden = !handy;
+      $('fieldOrder').hidden = handy;
+      $('startPlenum').hidden = handy;
+      $('modeInfo').textContent = handy
+        ? 'Alle ziehen auf dem eigenen Handy. Du blendest den QR-Code ein.'
+        : 'Eine Karte gross auf dem Beamer. Du schaltest weiter, Handys braucht es keine.';
+      setLinkText($('linkText'), state.set ? buildLink() : '');
+      updateSetInfo();
+    }
+
+    function updateSetInfo() {
+      var slug = state.set, info = $('setInfo');
+      if (!slug) { info.textContent = ''; return; }
+      function write(s) {
+        if (state.set !== slug) return;
+        if (!s) { info.textContent = 'Dieser Kartensatz lässt sich nicht laden.'; return; }
+        var n = s.karten.filter(function (k) { return state.typen.indexOf(k.typ) !== -1; }).length;
+        var text = s.beschreibung ? s.beschreibung + '.' : s.karten.length + ' Karten.';
+        if (n !== s.karten.length) text += ' ' + n + ' von ' + s.karten.length + ' Karten mit dieser Auswahl.';
+        info.textContent = text;
+      }
+      if (slug in setCache) { write(setCache[slug]); return; }
+      loadSet(slug).then(function (s) { setCache[slug] = s; write(s); })
+        .catch(function () { setCache[slug] = null; write(null); });
+    }
+
+    // Typ-Chips
+    TYP_KEYS.forEach(function (key) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.dataset.typ = key;
+      b.innerHTML = '<span class="dot" style="background:' + TYPEN[key].bg + '"></span>';
+      b.appendChild(document.createTextNode(TYPEN[key].label));
+      b.addEventListener('click', function () {
+        var on = state.typen.indexOf(key) !== -1;
+        if (on && state.typen.length === 1) { this.blur(); return; }
+        var next = on ? state.typen.filter(function (x) { return x !== key; }) : state.typen.concat(key);
+        state.typen = TYP_KEYS.filter(function (x) { return next.indexOf(x) !== -1; });
+        this.blur();
+        update();
+      });
+      $('typChips').appendChild(b);
+    });
+
+    $('modeChips').addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      state.mode = c.dataset.mode; c.blur(); update();
+    });
+    $('filterChips').addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      state.filter = c.dataset.filter; c.blur(); update();
+    });
+    $('orderChips').addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      state.order = c.dataset.order; c.blur(); update();
+    });
+    $('setChips').addEventListener('click', function (e) {
+      var c = e.target.closest('.chip'); if (!c) return;
+      state.set = c.dataset.slug; c.blur(); update();
+    });
+
+    // QR-Code
+    var qrOpen = false;
+    function openQr() {
+      if (!state.set) return;
+      var link = buildLink();
+      var img = $('qrImg');
+      $('qrFail').hidden = true;
+      img.hidden = false;
+      img.onerror = function () { img.hidden = true; $('qrFail').hidden = false; };
+      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&margin=0&ecc=M&data=' + encodeURIComponent(link);
+      var titel = (sets.filter(function (s) { return s.slug === state.set; })[0] || {}).titel || '';
+      $('qrKicker').textContent = titel;
+      $('qrScan').textContent = state.mode === 'handy' ? 'Scanne den Code und zieh deine erste Karte.' : 'Plenum-Ansicht';
+      setLinkText($('qrUrl'), link.replace(/^https?:\/\//, ''));
+      show('qr');
+      qrOpen = true;
+      $('closeQr').focus();
+    }
+    function closeQr() {
+      show('mod');
+      qrOpen = false;
+      $('showQr').focus();
+    }
+    $('showQr').addEventListener('click', openQr);
+    $('closeQr').addEventListener('click', closeQr);
+    document.addEventListener('keydown', function (e) {
+      if (qrOpen && e.key === 'Escape') closeQr();
+    });
+
+    // Link kopieren
+    $('copyLink').addEventListener('click', function () {
+      var btn = this, link = buildLink();
+      function done(ok) {
+        btn.textContent = ok ? 'Kopiert ✓' : 'Kopieren nicht möglich';
+        setTimeout(function () { btn.textContent = 'Link kopieren'; }, 1800);
+        btn.blur();
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = link; ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+        document.body.removeChild(ta);
+        done(ok);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(link).then(function () { done(true); }, fallback);
+      } else {
+        fallback();
+      }
+    });
+
+    $('startPlenum').addEventListener('click', function () { location.href = buildLink(); });
+
+    loadJSON('sets/index.json').then(function (data) {
+      sets = (data && Array.isArray(data.saetze) ? data.saetze : []).filter(function (s) { return s && validSlug(s.slug); });
+      if (!sets.length) throw new Error('leer');
+      sets.forEach(function (s) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip set';
+        b.dataset.slug = s.slug;
+        b.textContent = s.titel || s.slug;
+        $('setChips').appendChild(b);
+      });
+      state.set = sets[0].slug;
+      update();
+    }).catch(function () {
+      showError('Keine Kartensätze gefunden.', 'Die Datei sets/index.json fehlt oder ist fehlerhaft.');
+    });
+  }
+
+  /* ---------- Start ---------- */
+  var params = new URLSearchParams(location.search);
+  if (params.has('set') || params.has('mode')) {
+    startCards(params);
+  } else {
+    startModeration();
+  }
+})();
+</script>
+</body>
+</html>

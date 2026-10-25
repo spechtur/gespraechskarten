@@ -337,6 +337,11 @@ body.plenum .cardhead{padding-right:4rem}
   }
 
   function showError(title, text) {
+    // Direkt geöffnete Datei: Browser blockieren das Nachladen der Kartensätze
+    if (location.protocol === 'file:') {
+      title = 'Bitte über einen Server öffnen.';
+      text = 'Direkt geöffnet kann der Browser die Kartensätze nicht laden. Nutze den Link auf GitHub Pages oder starte im Ordner «python3 -m http.server» und öffne localhost:8000.';
+    }
     setColors(FARBEN.grau);
     $('errTitle').textContent = title || 'Kartensatz nicht gefunden.';
     $('errText').textContent = text || 'Prüf den Link oder frag nach einem neuen QR-Code.';

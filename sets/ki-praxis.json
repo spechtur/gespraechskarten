@@ -1,0 +1,56 @@
+{
+  "slug": "ki-praxis",
+  "titel": "KI in meiner (Schul-)Praxis: Gesprächseinstieg",
+  "beschreibung": "Vierzig Karten rund um KI im Schulalltag und im privaten Alltag von Lehrpersonen, vom Kindergarten bis zur Oberstufe. Anregend statt provozierend, ohne Produktnamen.",
+  "karten": [
+    { "nr": 1, "typ": "frage", "text": "Welches Gefühl taucht bei dir als Erstes auf, wenn du an KI im Schulalltag denkst, und woher kommt es wohl?" },
+    { "nr": 2, "typ": "these", "text": "Wer sich mit KI unwohl fühlt, hat oft etwas bemerkt, das andere noch übersehen." },
+    { "nr": 3, "typ": "satz", "text": "Wenn ich an meine ersten Berührungen mit KI zurückdenke, ..." },
+    { "nr": 4, "typ": "erfahrung", "text": "Erzähl von einem Moment, in dem dich eine KI überrascht hat, positiv oder irritierend." },
+
+    { "nr": 5, "typ": "frage", "text": "Wofür fragst du KI privat um Rat, und wofür bewusst nicht?" },
+    { "nr": 6, "typ": "these", "text": "Was wir privat mit KI ausprobieren, prägt unsere Haltung im Beruf stärker als jede Weiterbildung." },
+    { "nr": 7, "typ": "satz", "text": "Wenn ich KI privat nutze, merke ich, dass ..." },
+    { "nr": 8, "typ": "erfahrung", "text": "Erzähl von einem Moment, in dem du KI mit deiner Familie oder mit Freund:innen ausprobiert hast. Was ist daraus geworden?" },
+
+    { "nr": 9, "typ": "frage", "text": "Welche Arbeit würdest du am liebsten abgeben und welche auf keinen Fall, und was unterscheidet die beiden?" },
+    { "nr": 10, "typ": "these", "text": "Die Zeit, die KI bei der Vorbereitung spart, ist nur dann ein Gewinn, wenn wir sie bewusst anderswo einsetzen." },
+    { "nr": 11, "typ": "satz", "text": "Meine Unterrichtsvorbereitung würde sich mit KI am meisten dort verändern, wo ..." },
+    { "nr": 12, "typ": "erfahrung", "text": "Erinnere dich an ein Arbeitsblatt, einen Elternbrief oder eine Idee, die mit KI-Hilfe entstanden ist. Was hast du daran verändert, bevor du es verwendet hast?" },
+
+    { "nr": 13, "typ": "frage", "text": "Ab welchem Alter und in welcher Form gehört KI ins Leben von Kindern, und woran machst du das fest?" },
+    { "nr": 14, "typ": "these", "text": "Mühe ist beim Lernen nicht nur ein Hindernis, sondern oft der Kern." },
+    { "nr": 15, "typ": "satz", "text": "Wenn Kinder oder Jugendliche mit KI lernen, besteht die grösste Chance darin, dass ..." },
+    { "nr": 16, "typ": "erfahrung", "text": "Erinnere dich an eine Situation, in der Kinder oder Jugendliche in deinem Umfeld KI genutzt haben, in der Schule oder zu Hause. Was hast du beobachtet?" },
+
+    { "nr": 17, "typ": "frage", "text": "Was möchtest du an einer Leistung eigentlich sehen, und wie verändert sich das, wenn KI mitarbeiten kann?" },
+    { "nr": 18, "typ": "these", "text": "Eine Aufgabe, die sich mit einem Klick lösen lässt, hat uns vielleicht schon vorher etwas über sich verraten." },
+    { "nr": 19, "typ": "satz", "text": "Eine Aufgabe, die ich auch in Zeiten von KI unverändert stellen würde, ..." },
+    { "nr": 20, "typ": "erfahrung", "text": "Erinnere dich an eine Aufgabe, bei der KI deinen Blick darauf verändert hat, was eine gute Aufgabe ausmacht." },
+
+    { "nr": 21, "typ": "frage", "text": "Was von dem, was du als Lehrperson tust, würdest du auch dann noch tun wollen, wenn KI es könnte?" },
+    { "nr": 22, "typ": "these", "text": "Beziehung ist das, was bleibt, aber vielleicht müssen wir genauer sagen, was wir darunter verstehen." },
+    { "nr": 23, "typ": "satz", "text": "Wenn im Klassenzimmer eine KI mitdenkt, verändert sich für mich als Lehrperson ..." },
+    { "nr": 24, "typ": "erfahrung", "text": "Erzähl von einem Moment, in dem eine menschliche Reaktion von dir mehr bewirkt hat als jede Erklärung." },
+
+    { "nr": 25, "typ": "frage", "text": "Was müsste in deiner Klasse oder an deiner Schule verbindlich geklärt sein, damit KI nicht zum Streitfall wird?" },
+    { "nr": 26, "typ": "these", "text": "Regeln zu KI tragen nur dann, wenn sie gemeinsam entstanden sind und nicht von oben kommen." },
+    { "nr": 27, "typ": "satz", "text": "Eine Abmachung zu KI, die bei uns schon funktioniert oder bald nötig wäre, ..." },
+    { "nr": 28, "typ": "erfahrung", "text": "Erinnere dich an ein Gespräch im Team oder mit Eltern über den Umgang mit KI. Was hat dabei geholfen, was nicht?" },
+
+    { "nr": 29, "typ": "frage", "text": "Welche Informationen über Kinder würdest du nie in ein KI-System eingeben, und wie klar ist dir diese Grenze?" },
+    { "nr": 30, "typ": "these", "text": "Wer ein KI-Ergebnis weitergibt, übernimmt die Verantwortung dafür, auch wenn er es nicht selbst verfasst hat." },
+    { "nr": 31, "typ": "satz", "text": "Wenn es um Datenschutz und Urheberrecht bei KI geht, fühle ich mich ..." },
+    { "nr": 32, "typ": "erfahrung", "text": "Erzähl von einem Fall, in dem eine KI etwas Falsches, Einseitiges oder Erfundenes geliefert hat. Wie hast du es gemerkt?" },
+
+    { "nr": 33, "typ": "frage", "text": "Wer in deiner Klasse hat leichten Zugang zu KI und einen guten Umgang damit, und wer nicht?" },
+    { "nr": 34, "typ": "these", "text": "Ob KI Bildungsunterschiede verkleinert oder vergrössert, entscheidet sich weniger an der Technik als daran, wer den Umgang damit lernt." },
+    { "nr": 35, "typ": "satz", "text": "Damit alle Kinder von KI profitieren können, braucht es ..." },
+    { "nr": 36, "typ": "erfahrung", "text": "Erinnere dich an eine Situation, in der KI für ein Kind eine Hürde abgebaut oder eine neue geschaffen hat, zum Beispiel bei Sprache, Lesen oder Schreiben." },
+
+    { "nr": 37, "typ": "frage", "text": "Welches Wissen und Können sollte jedes Kind haben, auch wenn eine KI es jederzeit ersetzen könnte?" },
+    { "nr": 38, "typ": "these", "text": "Je besser Maschinen Antworten liefern, desto wichtiger werden gute Fragen." },
+    { "nr": 39, "typ": "satz", "text": "Wenn ich mir die Schule in zehn Jahren vorstelle, ..." },
+    { "nr": 40, "typ": "erfahrung", "text": "Erinnere dich an etwas aus deiner eigenen Schulzeit, das dich bis heute trägt, ohne dass du es nachschlagen müsstest." }
+  ]
+}

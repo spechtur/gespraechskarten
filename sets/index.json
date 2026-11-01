@@ -1,8 +1,6 @@
 {
   "saetze": [
-    {
-      "slug": "srl-einstieg",
-      "titel": "Selbstreguliertes Lernen: Gesprächseinstieg"
-    }
+    { "slug": "srl-einstieg", "titel": "Selbstreguliertes Lernen: Gesprächseinstieg" },
+    { "slug": "ki-praxis", "titel": "KI in meiner (Schul-)Praxis: Gesprächseinstieg" }
   ]
 }

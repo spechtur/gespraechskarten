@@ -1,0 +1,56 @@
+{
+  "slug": "beurteilung-grundlagen",
+  "titel": "Beurteilungskultur: Grundlagen (Leseauftrag)",
+  "beschreibung": "40 Karten in zehn Themenfeldern zum Leseauftrag «Grundlagen kompetenzorientierter Beurteilung» (Lötscher & Roos, S. 19–45) für den Einstieg in die Weiterbildung «Zeitgemässe Beurteilungskultur»",
+  "karten": [
+    { "nr": 1, "typ": "frage", "text": "Welcher Gedanke aus dem Leseauftrag ist dir nachgegangen – und welcher hat dich geärgert?" },
+    { "nr": 2, "typ": "these", "text": "Über Beurteilung streiten wir nicht wegen der Noten, sondern weil wir Unterschiedliches von der Schule erwarten." },
+    { "nr": 3, "typ": "satz", "text": "Wenn ich an meine eigene Schulzeit denke, war Beurteilung für mich vor allem ..." },
+    { "nr": 4, "typ": "erfahrung", "text": "Erzähl von einer Beurteilung, die du als Kind oder Jugendliche:r erhalten hast und bis heute nicht vergessen hast." },
+
+    { "nr": 5, "typ": "frage", "text": "Enkulturation, Integration, Qualifikation, Allokation: Welcher dieser vier Aufträge der Schule frisst in deinem Alltag am meisten Energie?" },
+    { "nr": 6, "typ": "these", "text": "Die Schule soll nicht die Besten auswählen, sondern alle passend platzieren. Im Alltag fühlt es sich trotzdem oft wie Auslese an." },
+    { "nr": 7, "typ": "satz", "text": "Ein Laufbahnentscheid ist für mich dann gerecht, wenn ..." },
+    { "nr": 8, "typ": "erfahrung", "text": "Erzähl von einem Zuweisungsentscheid, den du getroffen oder miterlebt hast und der dich noch beschäftigt." },
+
+    { "nr": 9, "typ": "frage", "text": "Leistungs-, Gleichheits- oder Bedürfnisprinzip: Nach welchem Prinzip entscheidest du im Zweifelsfall?" },
+    { "nr": 10, "typ": "these", "text": "«Wer mehr leistet, darf und soll besser leben» – dieser Satz klingt fair, solange alle mit gleichen Voraussetzungen starten." },
+    { "nr": 11, "typ": "satz", "text": "Gleiches gleich und Ungleiches ungleich zu behandeln, heisst in meiner Klasse konkret ..." },
+    { "nr": 12, "typ": "erfahrung", "text": "Erzähl von einer Massnahme, mit der ihr einem Kind ungleiche Startbedingungen ausgeglichen habt." },
+
+    { "nr": 13, "typ": "frage", "text": "Grundanspruch, Orientierungspunkt, Auftrag des Zyklus: Welcher Begriff war dir vor der Lektüre unklar?" },
+    { "nr": 14, "typ": "these", "text": "Wer den Unterschied zwischen «bearbeitet» und «erreicht» nicht kennt, beurteilt zu streng oder zu früh." },
+    { "nr": 15, "typ": "satz", "text": "Wenn ich mit dem Lehrplan 21 eine Beurteilung plane, schaue ich zuerst auf ..." },
+    { "nr": 16, "typ": "erfahrung", "text": "Erzähl von einem Kind, das eine Kompetenzstufe deutlich früher oder später erreicht hat als vorgesehen. Wie bist du damit umgegangen?" },
+
+    { "nr": 17, "typ": "frage", "text": "Woran erkennst du in deinem Fach, ob ein Kind selbstständig, kooperativ oder selbstkritisch arbeitet?" },
+    { "nr": 18, "typ": "these", "text": "Überfachliche Kompetenzen lernt man nicht nebenbei. Wer sie nicht beurteilt, sagt den Kindern: Sie zählen nicht." },
+    { "nr": 19, "typ": "satz", "text": "Im Kindergarten und in der Unterstufe zeigt sich Lernen oft weniger im Fach als in ..." },
+    { "nr": 20, "typ": "erfahrung", "text": "Erzähl von einer Situation, in der ein Kind fachlich und überfachlich gleichzeitig einen Schritt gemacht hat." },
+
+    { "nr": 21, "typ": "frage", "text": "Wissen, Können, Wollen: Welches der drei prüfst du am häufigsten – und welches fast nie?" },
+    { "nr": 22, "typ": "these", "text": "Kompetenz sieht man nie direkt. Jede Note ist ein Schluss von dem, was ein Kind zeigt, auf das, was es kann." },
+    { "nr": 23, "typ": "satz", "text": "Eine Aufgabe zeigt mir echte Kompetenz, wenn das Kind ..." },
+    { "nr": 24, "typ": "erfahrung", "text": "Erzähl von einem Kind, das in der Prüfung versagt und im Alltag gezeigt hat, dass es die Sache kann – oder umgekehrt." },
+
+    { "nr": 25, "typ": "frage", "text": "Wann hast du zuletzt erlebt, dass Kinder vor allem für die Prüfung gelernt haben statt für die Sache?" },
+    { "nr": 26, "typ": "these", "text": "Kompetenzorientierung und Bildung sind keine Gegensätze. Gefährlich wird es erst, wenn nur noch zählt, was sich messen lässt." },
+    { "nr": 27, "typ": "satz", "text": "Was ich den Kindern mitgeben will und in keiner Prüfung vorkommt, ist ..." },
+    { "nr": 28, "typ": "erfahrung", "text": "Erzähl von einem Lernerfolg eines Kindes, den du in keiner Note abbilden konntest." },
+
+    { "nr": 29, "typ": "frage", "text": "Was sieht eine Besucherin in deinem Unterricht – und was bleibt ihr verborgen?" },
+    { "nr": 30, "typ": "these", "text": "Ob Unterricht wirkt, erkennt man nicht an der Methode, sondern daran, wie tief die Kinder nachdenken." },
+    { "nr": 31, "typ": "satz", "text": "Ein Kind ist kognitiv wirklich aktiviert, wenn ich merke, dass ..." },
+    { "nr": 32, "typ": "erfahrung", "text": "Erzähl von einer Lektion, die von aussen unspektakulär aussah und in der trotzdem viel gelernt wurde." },
+
+    { "nr": 33, "typ": "frage", "text": "Welche der fünf Strategien formativer Beurteilung gelingt dir am besten, und welche kommt bei dir zu kurz?" },
+    { "nr": 34, "typ": "these", "text": "Formativ heisst nicht «unbenotete Probe». Wer nur das Notenbüchlein weglässt, beurteilt noch nicht formativ." },
+    { "nr": 35, "typ": "satz", "text": "Die Kinder kennen bei mir die Ziele und Erfolgskriterien, weil ..." },
+    { "nr": 36, "typ": "erfahrung", "text": "Erzähl von einem Moment, in dem Kinder einander beim Lernen weitergeholfen haben – besser als du es gekonnt hättest." },
+
+    { "nr": 37, "typ": "frage", "text": "Woran merken die Kinder bei dir, ob sie gerade üben dürfen oder zeigen müssen, was sie können?" },
+    { "nr": 38, "typ": "these", "text": "Wenn Kinder Fehler verstecken, haben sie die Lernsituation als Prüfung gelesen – egal, was wir gesagt haben." },
+    { "nr": 39, "typ": "satz", "text": "Fehler dürfen bei mir passieren, solange ..." },
+    { "nr": 40, "typ": "erfahrung", "text": "Erzähl von einer Situation, in der du ein Kind zugleich fördern und über seine Laufbahn entscheiden musstest. Was hat dir geholfen?" }
+  ]
+}

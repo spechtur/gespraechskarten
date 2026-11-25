@@ -119,7 +119,6 @@ button:focus-visible{outline:.2em solid var(--fg);outline-offset:.15em}
 .zusatz{margin:0;font-size:clamp(1rem,4vw,1.5rem);opacity:.9}
 .cardfoot{display:flex;flex-direction:column;align-items:stretch;gap:.1rem}
 #next{min-height:64px;width:100%;font-size:clamp(1.05rem,4.6vw,1.4rem)}
-#reshuffle{align-self:center}
 
 /* Plenum */
 body.plenum #card{cursor:pointer;padding:max(2rem,4vh) max(2rem,5vw) max(2rem,5vh)}
@@ -249,7 +248,6 @@ body.plenum .cardhead{padding-right:4rem}
   </div>
   <div class="cardfoot" id="handyFoot">
     <button type="button" class="btn" id="next">Nächste Karte →</button>
-    <button type="button" class="linkbtn" id="reshuffle">Neu mischen</button>
   </div>
   <p class="hint" id="plenumHint" hidden>Klick, Leertaste oder → für die nächste Karte · ← zurück · F Vollbild</p>
 </section>
@@ -430,7 +428,7 @@ body.plenum .cardhead{padding-right:4rem}
     function buildDeck(avoidNr) {
       var pool = set.karten.filter(function (k) { return active.indexOf(k.typ) !== -1; });
       deck = ordered ? pool : shuffle(pool);
-      // Nach Neu mischen nicht dieselbe Karte nochmals zuoberst
+      // Beim erneuten Mischen nicht dieselbe Karte nochmals zuoberst
       if (!ordered && deck.length > 1 && avoidNr != null && deck[0].nr === avoidNr) {
         var t = deck[0]; deck[0] = deck[1]; deck[1] = t;
       }
@@ -476,11 +474,6 @@ body.plenum .cardhead{padding-right:4rem}
 
     function next() { if (pos < deck.length) { pos++; render(); } }
     function prev() { if (pos > 0) { pos--; render(); } }
-    function reshuffle() {
-      var cur = deck[pos] ? deck[pos].nr : null;
-      buildDeck(cur);
-      render();
-    }
 
     function buildFilterbar() {
       var bar = $('filterbar');
@@ -509,7 +502,6 @@ body.plenum .cardhead{padding-right:4rem}
 
     // Bedienung
     $('next').addEventListener('click', function () { this.blur(); next(); });
-    $('reshuffle').addEventListener('click', function () { this.blur(); reshuffle(); });
     $('again').addEventListener('click', function () { this.blur(); buildDeck(null); render(); });
 
     var sx = null, sy = null, st = 0;
